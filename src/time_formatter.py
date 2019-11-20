@@ -15,10 +15,10 @@ class TimeFormatter:
         return ', '.join(result[:self.granularity])
 
     def intervals(self):
-        return {
+        return (
             ('weeks', 604800),
             ('days', 86400),
             ('hours', 3600),
             ('minutes', 60),
             ('seconds', 1),
-        }
+        )
