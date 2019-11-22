@@ -22,6 +22,12 @@ class Bot:
         analysis_size,
         complete_historic_candle_set
     ):
+        for asset, candles in complete_historic_candle_set.items():
+            if analysis_size >= len(candles):
+                print 'the analysis size was larger than the number of samples for at least one of the assets'
+                return
+
+        self.expected_log_length = len(complete_historic_candle_set['ETHBTC']) - analysis_size
         self.set_initial_values(
             time_frame,
             block_size,
@@ -29,10 +35,11 @@ class Bot:
             z_out_val,
             analysis_size
         )
+
         try:
             self.generate_log()
         except Exception:
-            print 'exiting as the log for this pass does not exist yet'
+            print 'exiting as the log for this set of values already exists'
             return
 
         self.time_formatter = TimeFormatter(4)
@@ -40,15 +47,17 @@ class Bot:
         self.run_test()
 
     def run_test(self):
-        while True:
+        while self.log.length() < self.expected_log_length:
             try:
                 self.prepare_pass()
                 self.make_pass()
-                # self.log_pass()
+                self.log_pass()
 
                 self.start_candle += 1
                 self.current_step += 1
             except:
+                if self.log.length() != self.expected_log_length:
+                    self.log.remove()
                 break
 
     def log_pass(self):

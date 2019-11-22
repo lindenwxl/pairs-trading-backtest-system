@@ -1,5 +1,6 @@
 import json
 import helpers
+import os
 
 class Log:
     def __init__(self, time_frame, z_in, z_out, analysis_size):
@@ -8,7 +9,7 @@ class Log:
         self.z_out = z_out
         self.analysis_size = analysis_size
 
-        if os.path.isfile(self.name):
+        if os.path.isfile(self.name()):
             raise Exception('The log already exists')
         else:
             self.create()
@@ -29,3 +30,12 @@ class Log:
 
     def name(self):
         return 'logs/log_'+self.time_frame+'_'+str(self.z_in)+'_'+str(self.z_out)+'_'+str(self.analysis_size)+'.json'
+
+    def length(self):
+        with open(self.name(), mode='r') as f:
+            log_entries = json.load(f)
+            return len(log_entries)
+
+    def remove(self):
+        if os.path.exists(self.name()):
+            os.remove(self.name())
