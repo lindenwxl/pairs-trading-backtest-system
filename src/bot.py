@@ -10,6 +10,7 @@ from order_remover import OrderRemover
 from log import Log
 from time_formatter import TimeFormatter
 from candles import Candles
+import assets
 
 class Bot:
     def __init__(
@@ -19,7 +20,7 @@ class Bot:
         z_in_val,
         z_out_val,
         analysis_size,
-        candles
+        complete_historic_candle_set
     ):
         self.set_initial_values(
             time_frame,
@@ -28,10 +29,14 @@ class Bot:
             z_out_val,
             analysis_size
         )
+        try:
+            self.generate_log()
+        except Exception:
+            print 'exiting as the log for this pass does not exist yet'
+            return
+
         self.time_formatter = TimeFormatter(4)
-        self.backtesting_candles = candles
-        self.possible_pairs = helpers.get_possible_pairs()
-        self.generate_log()
+        self.complete_historic_candle_set = complete_historic_candle_set
         self.run_test()
 
     def run_test(self):
@@ -90,11 +95,11 @@ class Bot:
         )
 
     def detect_cointegrated_pairs(self):
-        for pair in self.possible_pairs:
+        for pair in assets.possible_pairs:
             coint_analysis = CointegrationAnalysis(
                 pair,
                 self.exchange_rates,
-                self.candles
+                self.subset_candles
             )
             if (coint_analysis.asset_lengths_equal()
                 and coint_analysis.suitably_cointegrated()):
@@ -106,8 +111,12 @@ class Bot:
         self.display_elapsed_time()
         self.end_candle = self.start_candle + self.analysis_size
         self.cointegrated_pairs = []
-        self.candles = Candles.get_subset(self.start_candle, self.end_candle, self.backtesting_candles)
-        self.exchange_rates = ExchangeRates.from_candles(self.candles)
+        self.subset_candles = Candles.get_subset(
+            self.start_candle,
+            self.end_candle,
+            self.complete_historic_candle_set
+        )
+        self.exchange_rates = ExchangeRates.from_candles(self.subset_candles)
         if self.current_step == 0:
             self.wallet = Wallet(self.exchange_rates)
 

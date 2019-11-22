@@ -1,6 +1,3 @@
-from exchange_rates import ExchangeRates
-from assets import active as assets
-import config
 import json
 import helpers
 
@@ -10,7 +7,11 @@ class Log:
         self.z_in = z_in
         self.z_out = z_out
         self.analysis_size = analysis_size
-        self.create()
+
+        if os.path.isfile(self.name):
+            raise Exception('The log already exists')
+        else:
+            self.create()
 
     def create(self):
         with open(self.name(), mode='w') as f:
