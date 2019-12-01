@@ -61,7 +61,11 @@ class Bot:
                 break
 
     def log_pass(self):
-        self.log.append()
+        self.log.append(
+            self.wallet,
+            self.order_count,
+            self.exchange_rates
+        )
 
     def make_pass(self):
         self.detect_cointegrated_pairs()

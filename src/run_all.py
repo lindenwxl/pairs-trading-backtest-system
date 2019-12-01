@@ -20,8 +20,8 @@ def run_pass(args_dict):
 if __name__ == '__main__':
     # gather data values
     block_sizes_hours = {
-        '7D': 168.0
-        '1D': 24.0
+        '7D': 168.0,
+        '1D': 24.0,
         '12h': 12.0,
         '6h': 6.0,
         '3h': 3.0,

@@ -1,6 +1,7 @@
 import json
 import helpers
 import os
+from profit_calculator import ProfitCalculator as pc
 
 class Log:
     def __init__(self, time_frame, z_in, z_out, analysis_size):
@@ -18,11 +19,18 @@ class Log:
         with open(self.name(), mode='w') as f:
             json.dump([], f)
 
-    def append(self):
+    def append(self, wallet, order_count, exchange_rates):
         with open(self.name(), mode='r') as f:
             log_entries = json.load(f)
 
-            log_data = {}
+            log_data = {
+                'wallet_value_btc': pc.wallet_value_btc(wallet, exchange_rates),
+                'change_in_btc_volume': pc.change_in_btc_volume(wallet, exchange_rates),
+                'change_in_btc_volume_pct': pc.change_in_btc_volume_pct(wallet, exchange_rates),
+                'avg_btc_change_as_pct_of_order_value': pc.avg_btc_change_as_pct_of_order_value(wallet, exchange_rates, order_count),
+                'rolling_profit': wallet.rolling_profit,
+                'order_count': order_count
+            }
             log_entries.append(log_data)
 
         with open(self.name(), mode='w') as f:

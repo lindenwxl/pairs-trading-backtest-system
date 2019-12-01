@@ -49,7 +49,7 @@ class OrderBuilder:
             volume=self.wallet.sell(
                 asset[:3],
                 exchange_rate,
-                CurrencyConvertor.btc_vol_to_asset_vol(config.initial_btc_order_vol, exchange_rate)
+                CurrencyConvertor.btc_vol_to_asset_vol(config.btc_order_volume, exchange_rate)
             ),
             exchange_rate=exchange_rate
         )
@@ -60,7 +60,7 @@ class OrderBuilder:
             volume=self.wallet.buy(
                 asset[:3],
                 exchange_rate,
-                CurrencyConvertor.btc_vol_to_asset_vol(config.initial_btc_order_vol, exchange_rate)
+                CurrencyConvertor.btc_vol_to_asset_vol(config.btc_order_volume, exchange_rate)
             ),
             exchange_rate=exchange_rate
         )
