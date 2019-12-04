@@ -18,7 +18,6 @@ def run_pass(args_dict):
     )
 
 if __name__ == '__main__':
-    # gather data values
     block_sizes_hours = {
         '7D': 168.0,
         '1D': 24.0,
@@ -31,26 +30,37 @@ if __name__ == '__main__':
         '5m': 0.08333333333333333,
         '1m': 0.01666666666666666
     }
+    minute_intervals = {
+        '7D': 60*24*7,
+        '1D': 60*24,
+        '12h': 60*12,
+        '6h': 60*6,
+        '3h': 60*3,
+        '1h': 60,
+        '30m':30,
+        '15m': 15,
+        '5m': 5,
+        '1m': 1
+    }
 
-    # rule ranges
     z_in_vals = numpy.arange(0.00005, 0.00015, 0.00002)
     z_out_vals = numpy.arange(0.35, 0.8, 0.02)
-    analysis_sizes = range(72, 1050, 100)
+    analysis_sizes = range(72, 2000, 100)
 
     args_list = []
     current_time_frame = ''
+
+    minute_candles = Candles.get_all(
+        block_sizes_hours['1m'],
+        '1m',
+        2
+    )
 
     for time_frame, block_size in block_sizes_hours.items():
         for z_in in z_in_vals:
             for z_out in z_out_vals:
                 for analysis_size in analysis_sizes:
-
-                    if not current_time_frame is time_frame:
-                        current_time_frame = time_frame
-                        candles = Candles.get_all(
-                            block_size,
-                            time_frame
-                        )
+                    candles = minute_candles[::minute_intervals[time_frame]]
 
                     args_dict = {
                         'time_frame': time_frame,

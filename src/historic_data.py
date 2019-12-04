@@ -5,9 +5,9 @@ import sys
 import requests
 
 class HistoricData:
-    def __init__(self, step_hours, time_frame):
+    def __init__(self, step_hours, time_frame, years_to_gather):
         self.one_year_ms = 1539945317425
-        self.years_to_gather = 1
+        self.years_to_gather = years_to_gather
         self.max_candle_limit = 4999
 
         self.step_hours = step_hours
