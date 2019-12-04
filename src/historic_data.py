@@ -1,8 +1,8 @@
-from assets import active as assets
 import helpers
 import time
 import sys
 import requests
+import config
 
 class HistoricData:
     def __init__(self, step_hours, time_frame, years_to_gather):
@@ -37,7 +37,7 @@ class HistoricData:
         return r.json()
 
     def get_all_asset_candles(self, candles, num_candles):
-        for asset in assets+['BTCGBP']:
+        for asset in config.assets()+['BTCGBP']:
             res = self.get_candles_for_asset(
                 asset, self.time_frame, int(num_candles), self.start_ts
             )

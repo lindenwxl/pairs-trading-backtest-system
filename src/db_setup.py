@@ -32,7 +32,11 @@ class DbInitializer:
 
     def exec_query(self, query, args=None):
         cursor = self.conn.cursor()
-        cursor.execute(query, args) if args else cursor.execute(query)
+        if args:
+            cursor.execute(query, args)
+        else:
+            cursor.execute(query)
+        self.conn.commit()
 
     def trunc_table(self, table):
         query = "TRUNCATE TABLE " + table
@@ -43,7 +47,7 @@ class DbInitializer:
             query = "INSERT INTO assets(code, name) VALUES(%s,%s)"
             args = (asset[0], asset[1])
 
-            self.exec_query(query, args)
+            self.exec_query(query, args=args)
 
     def populate_possible_pairs_table(self):
         for asset_A in self.asset_codes():
@@ -52,7 +56,7 @@ class DbInitializer:
                     query = "INSERT INTO possible_pairs(asset_A, asset_B) VALUES(%s,%s)"
                     args = (asset_A, asset_B)
 
-                    self.exec_query(query, args)
+                    self.exec_query(query, args=args)
 
 if __name__ == '__main__':
     DbInitializer()

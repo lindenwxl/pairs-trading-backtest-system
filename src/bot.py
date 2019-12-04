@@ -10,7 +10,7 @@ from order_remover import OrderRemover
 from log import Log
 from time_formatter import TimeFormatter
 from candles import Candles
-import assets
+from db_connection_manager import DbConnectionManager
 
 class Bot:
     def __init__(
@@ -22,6 +22,8 @@ class Bot:
         analysis_size,
         complete_historic_candle_set
     ):
+        print '**'
+        print config.assets()
         for asset, candles in complete_historic_candle_set.items():
             if analysis_size >= len(candles):
                 print 'the analysis size was larger than the number of samples for at least one of the assets'
@@ -108,7 +110,7 @@ class Bot:
         )
 
     def detect_cointegrated_pairs(self):
-        for pair in assets.possible_pairs:
+        for pair in self.possible_pairs():
             coint_analysis = CointegrationAnalysis(
                 pair,
                 self.exchange_rates,
@@ -137,6 +139,13 @@ class Bot:
         print 'starting pass at: ', self.time_formatter.display(
             self.current_step*60*60*self.block_size
         )
+
+    def possible_pairs(self):
+        conn = DbConnectionManager().conn
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM possible_pairs')
+        rows = cursor.fetchall()
+        return [[row[1], row[2]] for row in rows]
 
     def set_initial_values(
         self,

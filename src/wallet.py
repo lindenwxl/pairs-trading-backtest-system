@@ -1,6 +1,5 @@
 from custom_exceptions import NotEnoughFundsException
 import helpers
-from assets import active as assets
 import config
 from exchange_rates import ExchangeRates
 from currency_convertor import CurrencyConvertor

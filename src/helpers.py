@@ -1,4 +1,3 @@
-from assets import active as assets
 import json
 
 def order_already_open(pair, current_orders):
