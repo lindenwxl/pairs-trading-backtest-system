@@ -1,0 +1,6 @@
+{
+  "user": "mysql username",
+  "password": "mysql password",
+  "host": "localhost",
+  "schema": "pairs-trading-backtest"
+}
